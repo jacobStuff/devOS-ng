@@ -5,3 +5,8 @@ kernel/kernel.elf
 *.o
 limine.sys
 limine.bin
+limine-12.5.1
+limine-binary
+.DS_Store
+limine-12.5.1.tar.xz
+limine-binary.tar.xz

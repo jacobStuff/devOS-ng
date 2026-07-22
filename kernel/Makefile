@@ -1,7 +1,7 @@
 CC = gcc
-CFLAGS = -std=gnu11 -nostdinc -ffreestanding -O2 -Wall -Wextra -fno-builtin
-LD = ld.lld
-LDFLAGS = -nostdlib -T kernel.ld
+CFLAGS = -std=gnu11 -m64 -ffreestanding -O2 -Wall -Wextra -fno-builtin -Iinclude
+LD ?= ld
+LDFLAGS = -nostdlib -m elf_x86_64 -T kernel.ld
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
@@ -17,10 +17,9 @@ kernel.bin: $(OBJ) boot.o
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-boot.o: boot/boot.asm
-	nasm -f elf64 boot/boot.asm -o boot.o
+# Prefer GCC/Clang assembler for portability instead of requiring nasm
+boot.o: boot/boot.S
+	$(CC) -c boot/boot.S -o boot.o
 
-clean:
-	rm -f $(OBJ) boot.o kernel.elf kernel.bin
 clean:
 	rm -f $(OBJ) boot.o kernel.elf kernel.bin

@@ -1,5 +1,4 @@
-#include <stdarg.h>
-#include <stdint.h>
+#include "../include/stdint.h"
 
 extern void kernel_puts(const char *s);
 

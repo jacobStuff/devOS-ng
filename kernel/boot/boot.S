@@ -1,7 +1,10 @@
-/* Fallback assembly entry for older toolchains */
-.global _start
+/* x86_64 entrypoint for the kernel */
+    .text
+    .global _start
+    .type _start, @function
 _start:
     call kernel_main
     cli
-1: hlt
-    jmp 1b
+.spin:
+    hlt
+    jmp .spin

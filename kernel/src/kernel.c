@@ -1,6 +1,8 @@
-#include <stdint.h>
+#include "../include/stdint.h"
 
 void kernel_puts(const char *s);
+
+void kernel_shell(void);
 
 void kernel_main(void) {
     kernel_puts("Hello from devOS kernel!\n");

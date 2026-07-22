@@ -1,7 +1,22 @@
-CC ?= x86_64-elf-gcc
-OBJCOPY ?= x86_64-elf-objcopy
+CC := $(shell command -v x86_64-elf-gcc 2>/dev/null)
+LD := $(shell command -v x86_64-elf-ld 2>/dev/null)
+OBJCOPY := $(shell command -v x86_64-elf-objcopy 2>/dev/null)
+NASM := $(shell command -v nasm 2>/dev/null)
+
+ifeq ($(CC),)
+$(error x86_64-elf-gcc is required. Install it or use Docker.)
+endif
+ifeq ($(LD),)
+$(error x86_64-elf-ld is required. Install it or use Docker.)
+endif
+ifeq ($(OBJCOPY),)
+$(error x86_64-elf-objcopy is required. Install it or use Docker.)
+endif
+ifeq ($(NASM),)
+$(error nasm is required. Install it or use Docker.)
+endif
+
 CFLAGS = -std=gnu11 -m64 -ffreestanding -O2 -Wall -Wextra -fno-builtin -Iinclude
-LD ?= x86_64-elf-ld
 LDFLAGS = -nostdlib -T kernel.ld
 
 SRC = $(wildcard src/*.c)
@@ -19,10 +34,10 @@ kernel.bin: $(OBJ) boot.o halt.o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 boot.o: boot/boot.asm
-	nasm -f elf64 boot/boot.asm -o boot.o
+	$(NASM) -f elf64 boot/boot.asm -o boot.o
 
 halt.o: src/halt.asm
-	nasm -f elf64 src/halt.asm -o halt.o
+	$(NASM) -f elf64 src/halt.asm -o halt.o
 
 clean:
 	rm -f $(OBJ) boot.o halt.o kernel.elf kernel.bin

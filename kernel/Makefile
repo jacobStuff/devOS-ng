@@ -1,7 +1,8 @@
-CC = gcc
+CC ?= x86_64-elf-gcc
+OBJCOPY ?= x86_64-elf-objcopy
 CFLAGS = -std=gnu11 -m64 -ffreestanding -O2 -Wall -Wextra -fno-builtin -Iinclude
-LD ?= ld
-LDFLAGS = -nostdlib -m elf_x86_64 -T kernel.ld
+LD ?= x86_64-elf-ld
+LDFLAGS = -nostdlib -T kernel.ld
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
@@ -12,14 +13,13 @@ all: kernel.bin
 
 kernel.bin: $(OBJ) boot.o
 	$(LD) $(LDFLAGS) -o kernel.elf $(OBJ) boot.o
-	objcopy -O binary kernel.elf kernel.bin
+	$(OBJCOPY) -O binary kernel.elf kernel.bin
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Prefer GCC/Clang assembler for portability instead of requiring nasm
-boot.o: boot/boot.S
-	$(CC) -c boot/boot.S -o boot.o
+boot.o: boot/boot.asm
+	nasm -f elf64 boot/boot.asm -o boot.o
 
 clean:
 	rm -f $(OBJ) boot.o kernel.elf kernel.bin

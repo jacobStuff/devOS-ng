@@ -4,11 +4,13 @@ void kernel_puts(const char *s);
 
 void kernel_shell(void);
 
+void kernel_hlt(void);
+
 void kernel_main(void) {
     kernel_puts("Hello from devOS kernel!\n");
     kernel_puts("Starting simple shell...\n");
     kernel_shell();
-    for(;;) __asm__("hlt");
+    kernel_hlt();
 }
 
 // Very small VGA text-mode writer for early PoC

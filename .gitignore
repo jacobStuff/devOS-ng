@@ -4,7 +4,7 @@ kernel/kernel.bin
 kernel/kernel.elf
 *.o
 limine.sys
-limine.bin
+limine-bios-cd.bin
 limine-12.5.1
 limine-binary
 .DS_Store

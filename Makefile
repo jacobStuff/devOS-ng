@@ -13,11 +13,17 @@ iso:
 	$(MAKE) -C $(KDIR)
 	mkdir -p iso/boot
 	cp kernel/kernel.bin iso/boot/kernel.bin
-	# Copy Limine files into the root and boot paths Limine expects
-	cp limine.cfg iso/limine.cfg
-	cp limine.cfg iso/boot/limine.cfg
-	cp limine.sys iso/limine-bios.sys
-	cp limine-bios-cd.bin iso/boot/limine-bios-cd.bin
+	cp kernel/kernel.elf iso/boot/kernel.elf
+	# Remove any stale legacy .cfg copies then copy Limine config into .conf
+	rm -f iso/limine.cfg iso/boot/limine.cfg iso/boot/limine/limine.cfg || true
+	cp limine.cfg iso/limine.conf
+	mkdir -p iso/boot/limine
+	cp limine.cfg iso/boot/limine.conf
+	cp limine.cfg iso/boot/limine/limine.conf
+	cp limine.sys iso/limine.sys
+	cp limine.sys iso/boot/limine.sys
+	cp $(if $(wildcard limine-bios.sys),limine-bios.sys,limine-binary/limine-bios.sys) iso/limine-bios.sys
+	cp $(if $(wildcard limine-bios-cd.bin),limine-bios-cd.bin,limine-binary/limine-bios-cd.bin) iso/boot/limine-bios-cd.bin
 	@test -n "$(ISO_TOOL)" || (echo "xorriso/genisoimage/mkisofs is required" >&2; exit 1)
 	$(ISO_CMD) -o iso.img -b boot/limine-bios-cd.bin -c boot.catalog -no-emul-boot -boot-load-size 4 -boot-info-table iso
 

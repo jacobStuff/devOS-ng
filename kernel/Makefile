@@ -16,8 +16,8 @@ ifeq ($(NASM),)
 $(error nasm is required. Install it or use Docker.)
 endif
 
-CFLAGS = -std=gnu11 -m64 -ffreestanding -O2 -Wall -Wextra -fno-builtin -Iinclude
-LDFLAGS = -nostdlib -T kernel.ld
+CFLAGS = -std=gnu11 -m64 -ffreestanding -mcmodel=large -O2 -Wall -Wextra -fno-builtin -Iinclude
+LDFLAGS = -nostdlib -T kernel.ld -z max-page-size=4096
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
